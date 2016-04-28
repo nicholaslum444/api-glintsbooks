@@ -85,19 +85,32 @@ class ScrapeController < ApplicationController
     # End Results class
 
     def index
-        scrape("accelerated c++");
+        scrape("c")
+        scrape("c++")
+        scrape("java")
+        scrape("javascript")
+        scrape("ruby")
+        @books = Book.all
+        render json: [@books, @books.count]
     end
 
     def scrape(skill)
         searchFormat = "/s/?field-keywords=" + CGI.escape(skill) + "+book"
         goUrl = @@baseUrl + searchFormat
-        resultObjArray = []
-        #resultObjArray = scrapeResults(goUrl)
-        @books = Book.all
-        resultObjArray.each do |resultObj|
-            ;
+        scrapeResults(goUrl).each do |resultObj|
+            title = resultObj.getTitle
+            if (title == -1)
+                next
+            end
+            @bookset = Book.where(title: title)
+            if @bookset.count <= 0
+                @book = Book.new(params[:book])
+                updateBookData(@book, resultObj, skill)
+            else
+                updateBookData(@bookset.first, resultObj, skill)
+            end
         end
-        render json: [goUrl, resultObjArray, resultObjArray.count, @books]
+        @books = Book.all
     end
 
     private 
@@ -144,8 +157,6 @@ class ScrapeController < ApplicationController
             # rating on book page
             if (bookPage.css("#acrPopover").count > 0)
                 resultObj.setRating(bookPage.at_css("#acrPopover").attr("title"))
-            elsif (bookPage.css("#acrCustomerWriteReviewText").count > 0)
-                resultObj.setRating("There are no ratings for this item yet")
             end
 
             # coverurl on book page
@@ -177,12 +188,28 @@ class ScrapeController < ApplicationController
             if (authorUrl != -1) 
                 authorPage = Nokogiri::HTML(open(@@baseUrl + authorUrl))
                 if (authorPage.css("#ap-bio span").count > 0)
-                    resultObj.setAuthorBio(authorPage.at_css("#ap-bio span").text.strip)
+                    bio = authorPage.at_css("#ap-bio span").text.strip
+                    if (bio.length > 0)
+                        resultObj.setAuthorBio(bio)
+                    end
                 end
             end
         rescue OpenURI::HTTPError
             scrapeAuthor(resultObj, authorUrl)
         end
+    end
+
+    def updateBookData(book, resultObj, skill)
+        book.title = resultObj.getTitle
+        book.author_name = resultObj.getAuthorName != -1 ? resultObj.getAuthorName : "Unknown Author"
+        book.author_bio = resultObj.getAuthorBio != -1 ? resultObj.getAuthorBio : "Author Bio Unavailable"
+        book.desc = resultObj.getDesc != -1 ? resultObj.getDesc : "Description Unavailable"
+        book.price = resultObj.getPrice != -1 ? resultObj.getPrice : 0.00
+        book.rating = resultObj.getRating != -1 ? resultObj.getRating : "Rating unavailable"
+        book.image_url = resultObj.getCoverUrl != -1 ? resultObj.getCoverUrl : "https://upload.wikimedia.org/wikipedia/en/7/73/Image_unavailable.jpg"
+        book.skill = skill
+        book.is_scraped = true;
+        book.save
     end
 
 end
