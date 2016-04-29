@@ -8,6 +8,7 @@
 ```bash
 git clone https://github.com/nicholaslum444/api-glintsbooks.git
 cd api-glintsbooks
+bundle install
 rake db:reset
 rails s
 ```
