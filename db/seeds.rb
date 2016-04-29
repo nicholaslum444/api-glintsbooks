@@ -5,6 +5,28 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+skills = Skill.create([
+    {
+        area: 'programming',
+        value: 'c'
+    },
+    {
+        area: 'programming',
+        value: 'c++'
+    },
+    {
+        area: 'programming',
+        value: 'java'
+    },
+    {
+        area: 'programming',
+        value: 'javascript'
+    },
+    {
+        area: 'programming',
+        value: 'ruby'
+    }
+]);
 books = Book.create([
     {
         title: 'javascript abc',

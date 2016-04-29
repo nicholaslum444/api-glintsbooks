@@ -13,6 +13,11 @@ class BooksController < ApplicationController
     render json: @book
   end
 
+  # GET /books/skill/ruby
+  def filter
+      render json: Book.where(skill: params[:value])
+  end
+
   # POST /books
   def create
     @book = Book.new(book_params)

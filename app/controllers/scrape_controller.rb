@@ -85,13 +85,16 @@ class ScrapeController < ApplicationController
     # End Results class
 
     def index
-        scrape("c")
-        scrape("c++")
-        scrape("java")
-        scrape("javascript")
-        scrape("ruby")
+        Skill.all.each do |skill|
+            scrape(skill.value)
+        end
+        #scrape("c")
+        #scrape("c++")
+        #scrape("java")
+        #scrape("javascript")
+        #scrape("ruby")
         @books = Book.all
-        render json: [@books, @books.count]
+        render json: [@books, @books.count, Skill.all.count]
     end
 
     def scrape(skill)
@@ -174,8 +177,9 @@ class ScrapeController < ApplicationController
             #resultObj.setDesc(bookPage.css("#bookDesc_iframe_wrapper"))
             #end
             ##### NOTE ######
-            # Description cannot be farmed because it is loaded with javascript.
-            # No time to learn new tech to get the description
+            # Description cannot be farmed because it is loaded via javascript.
+            # No time to learn new tech to get the description from js
+            # :((((
 
         rescue OpenURI::HTTPError
             scrapeBook(resultObj, bookUrl)

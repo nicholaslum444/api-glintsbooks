@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
+  resources :skills
   resources :books
 
   get "scrape" => "scrape#index"
+  get "books/skill/:value" => "books#filter"
 
   root "books#index"
 
