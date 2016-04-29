@@ -37,7 +37,8 @@ books = Book.create([
         rating: 4.5,
         image_url: 'http://www.pngall.com/wp-content/uploads/2016/03/John-Cena-Logo-PNG.png',
         skill: 'javascript',
-        is_scraped: false
+        is_scraped: false,
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     },
     {
         title: 'java abc',
@@ -48,6 +49,7 @@ books = Book.create([
         rating: 4.1,
         image_url: 'http://www.pngall.com/wp-content/uploads/2016/03/John-Cena-Logo-PNG.png',
         skill: 'java',
-        is_scraped: false
+        is_scraped: false,
+        url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     }
 ]);

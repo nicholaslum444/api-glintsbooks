@@ -204,6 +204,7 @@ class ScrapeController < ApplicationController
     end
 
     def updateBookData(book, resultObj, skill)
+        book.url = resultObj.getUrl
         book.title = resultObj.getTitle
         book.author_name = resultObj.getAuthorName != -1 ? resultObj.getAuthorName : "Unknown Author"
         book.author_bio = resultObj.getAuthorBio != -1 ? resultObj.getAuthorBio : "Author Bio Unavailable"
